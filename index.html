@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cameron's Illinois Permit Prep App</title>
+<style>
+:root{--bg:#f6f7fb;--ink:#1d2433;--muted:#5b6472;--card:#fff;--line:#e1e5ee;--accent:#1f3a5f;--accent2:#2f6fed;--good:#dff8e7;--bad:#ffe3e3;--warn:#fff6d8}
+*{box-sizing:border-box} body{font-family:Arial,Helvetica,sans-serif;margin:0;background:var(--bg);color:var(--ink);line-height:1.45}
+header{background:linear-gradient(135deg,#111827,#1f3a5f);color:#fff;padding:20px 18px} header h1{margin:0;font-size:26px} header p{margin:6px 0 0;color:#dbeafe}
+.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);padding:10px;display:flex;gap:8px;overflow-x:auto;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.topbar button{white-space:nowrap;border:0;border-radius:10px;padding:10px 12px;background:#eaf0ff;color:#11243f;font-weight:700;cursor:pointer}.topbar button.active{background:var(--accent);color:white}
+main{max-width:1120px;margin:auto;padding:16px}.view{display:none}.view.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.tile{cursor:pointer;transition:.15s}.tile:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.btn{border:0;border-radius:10px;padding:10px 14px;background:var(--accent);color:#fff;font-weight:700;cursor:pointer;margin:4px}.btn.alt{background:#475569}.btn.good{background:#147a3d}.btn.warn{background:#9a6700}
+.lessonText{white-space:pre-line;font-size:17px}.cram{background:#f8fafc;border-left:5px solid var(--accent2);padding:12px;border-radius:8px}
+.choice{display:block;width:100%;text-align:left;border:1px solid #cbd5e1;border-radius:10px;padding:12px;margin:8px 0;background:white;cursor:pointer;font-size:16px}.choice:hover{background:#f1f5f9}.choice.correct{background:var(--good);border-color:#16a34a}.choice.wrong{background:var(--bad);border-color:#dc2626}
+.explain{display:none;background:#f8fafc;border-left:5px solid #94a3b8;padding:10px;margin-top:10px;border-radius:8px}.tag{display:inline-block;font-size:12px;text-transform:uppercase;font-weight:800;color:#475569;background:#f1f5f9;border-radius:99px;padding:4px 8px}
+.progressWrap{background:#e5e7eb;border-radius:99px;height:14px;overflow:hidden}.progressBar{height:100%;background:var(--accent2);width:0%}
+.signGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.sign{border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center;background:white}.shape{margin:8px auto;display:flex;align-items:center;justify-content:center;font-weight:900;color:white}.oct{width:78px;height:78px;background:#c91d1d;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)}.tri{width:0;height:0;border-left:48px solid transparent;border-right:48px solid transparent;border-top:82px solid #d62828;position:relative}.diamond{width:72px;height:72px;background:#facc15;transform:rotate(45deg);color:#111}.diamond span{transform:rotate(-45deg)}.pennant{width:92px;height:56px;background:#facc15;clip-path:polygon(0 0,100% 50%,0 100%)}.circle{width:78px;height:78px;border-radius:50%;background:#facc15;color:#111}.rect{width:100px;height:62px;background:#fff;color:#111;border:4px solid #111}.school{width:80px;height:80px;background:#a3e635;clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%) ; color:#111}
+.badge{font-size:34px} .small{color:var(--muted);font-size:14px} .pill{display:inline-block;background:#eef2ff;color:#1e3a8a;padding:5px 10px;border-radius:999px;margin:3px;font-weight:700}
+.notice{background:var(--warn);border-left:5px solid #ca8a04;padding:12px;border-radius:8px} code{background:#f1f5f9;padding:2px 5px;border-radius:5px}
+@media(max-width:600px){header h1{font-size:22px} main{padding:10px} .card{padding:14px}}
+</style>
+</head>
+<body>
+<header>
+<h1>Cameron's Illinois Permit Prep App</h1>
+<p>Study lessons, topic quizzes, random 35-question final exams, and progress tracking in one free static site.</p>
+</header>
+<nav class="topbar" id="nav">
+<button data-view="home" onclick="showView('home')">Home</button>
+<button data-view="study" onclick="showView('study')">Study</button>
+<button data-view="signlab" onclick="showView('signlab')">Sign Lab</button>
+<button data-view="quizMenu" onclick="showView('quizMenu')">Quizzes</button>
+<button onclick="startExam()">Final Exam</button>
+<button data-view="progress" onclick="showView('progress')">Progress</button>
+<button data-view="parent" onclick="showView('parent')">Parent Checklist</button>
+</nav>
+<main>
+<section class="view active" id="home">
+<div class="card">
+<h2>Start here</h2>
+<p>This is the click-and-use learning app version. Cameron should go in this order:</p>
+<p><span class="pill">1. Study</span><span class="pill">2. Topic quizzes</span><span class="pill">3. Sign Lab</span><span class="pill">4. Final Exam</span></p>
+<div class="notice"><strong>Readiness rule:</strong> before going to the DMV, Cameron should score at least <strong>90%</strong> on the random 35-question final exam twice in a row and understand every missed explanation.</div>
+</div>
+<div class="grid">
+<div class="card tile" onclick="showView('study')"><div class="badge">📖</div><h3>Study Lessons</h3><p>Short lessons for every major Illinois permit-test topic.</p></div>
+<div class="card tile" onclick="showView('signlab')"><div class="badge">🚧</div><h3>Sign Lab</h3><p>Shape and color memory drills for road signs.</p></div>
+<div class="card tile" onclick="showView('quizMenu')"><div class="badge">✅</div><h3>Topic Quizzes</h3><p>Practice by topic with instant feedback.</p></div>
+<div class="card tile" onclick="startExam()"><div class="badge">🎓</div><h3>Final Exam</h3><p>35 random questions each time.</p></div>
+</div>
+</section>
+
+<section class="view" id="study">
+<div class="card"><h2>Study Lessons</h2><p>Click a module. Read the lesson, then take that topic’s quiz.</p></div>
+<div id="topicGrid" class="grid"></div>
+</section>
+
+<section class="view" id="lesson">
+<div class="card">
+<button class="btn alt" onclick="showView('study')">← Back to lessons</button>
+<h2 id="lessonTitle"></h2>
+<div id="lessonBody" class="lessonText"></div>
+<h3>Night-before cram points</h3>
+<div id="lessonCram" class="cram"></div>
+<button class="btn good" id="lessonQuizBtn">Take this quiz</button>
+</div>
+</section>
+
+<section class="view" id="signlab">
+<div class="card">
+<h2>Road Sign Lab</h2>
+<p>Memorize shape and color first. That often gives away the answer even before reading the sign.</p>
+</div>
+<div class="signGrid">
+<div class="sign"><div class="shape oct">STOP</div><strong>Octagon</strong><p>Stop.</p></div>
+<div class="sign"><div class="shape tri"></div><strong>Triangle</strong><p>Yield.</p></div>
+<div class="sign"><div class="shape diamond"><span>!</span></div><strong>Diamond</strong><p>Warning.</p></div>
+<div class="sign"><div class="shape pennant"></div><strong>Pennant</strong><p>No passing zone.</p></div>
+<div class="sign"><div class="shape circle">RR</div><strong>Round yellow</strong><p>Railroad ahead.</p></div>
+<div class="sign"><div class="shape rect">SPEED<br>LIMIT</div><strong>White rectangle</strong><p>Regulatory rule.</p></div>
+<div class="sign"><div class="shape school">SCHOOL</div><strong>Pentagon</strong><p>School zone/crossing.</p></div>
+<div class="sign"><div class="shape" style="width:100px;height:62px;background:#f97316">WORK</div><strong>Orange</strong><p>Construction/maintenance.</p></div>
+</div>
+<div class="card"><button class="btn good" onclick="startQuiz('signs',12)">Practice road signs</button></div>
+</section>
+
+<section class="view" id="quizMenu">
+<div class="card"><h2>Topic Quizzes</h2><p>Take quizzes by topic. Each answer gives immediate feedback and explanation.</p></div>
+<div id="quizGrid" class="grid"></div>
+</section>
+
+<section class="view" id="quiz">
+<div class="card">
+<button class="btn alt" onclick="showView('quizMenu')">← Quiz menu</button>
+<h2 id="quizTitle"></h2>
+<p id="scoreLine">Score: 0/0</p>
+<div class="progressWrap"><div class="progressBar" id="quizBar"></div></div>
+<p><button class="btn" onclick="newSameQuiz()">New random set</button><button class="btn warn" onclick="showAllExplanations()">Show explanations</button></p>
+</div>
+<div id="questionArea"></div>
+</section>
+
+<section class="view" id="progress">
+<div class="card">
+<h2>Progress</h2>
+<p>This app saves progress in this browser using local storage. It does not upload anything.</p>
+<div id="progressList"></div>
+<button class="btn warn" onclick="resetProgress()">Reset progress</button>
+</div>
+</section>
+
+<section class="view" id="parent">
+<div class="card">
+<h2>Parent DMV Checklist</h2>
+<ul>
+<li>Driving school permit application/proof from the school.</li>
+<li>Accepted identity document for Cameron.</li>
+<li>Proof of Social Security number.</li>
+<li>Accepted Illinois residency documents.</li>
+<li>Parent/legal guardian present or ready to sign where required.</li>
+<li>Payment method for any fee.</li>
+<li>Glasses/contacts if he needs them.</li>
+<li>He has taken multiple random 35-question exams and scored 90% or better.</li>
+</ul>
+</div>
+<div class="card">
+<h2>GitHub Pages upload instructions</h2>
+<ol>
+<li>Create a free GitHub account.</li>
+<li>Create a public repository named <code>illinois-permit-course</code>.</li>
+<li>Click <strong>Add file → Upload files</strong>.</li>
+<li>Drag in <code>index.html</code> from this package.</li>
+<li>Click <strong>Commit changes</strong>.</li>
+<li>Go to <strong>Settings → Pages</strong>.</li>
+<li>Choose <strong>Deploy from branch</strong>, branch <strong>main</strong>, folder <strong>/root</strong>, then Save.</li>
+<li>Wait a minute. Your site will be at <code>https://YOURUSERNAME.github.io/illinois-permit-course/</code>.</li>
+</ol>
+</div>
+</section>
+</main>
+
+<script>
+const TOPICS = [{"id": "permit", "title": "Getting the Permit", "emoji": "\ud83e\udeaa", "lesson": "Cameron\u2019s first goal is not the driver\u2019s license. His first goal is the Illinois instruction permit.\n\nFor a teen driver, the permit is permission to practice with proper supervision. It is not permission to drive alone. Illinois uses a Graduated Driver Licensing program, usually called GDL, because teen drivers earn privileges in stages.\n\nWhat happens at the DMV:\n1. Bring the driving-school permit application or proof from the school.\n2. Bring accepted identity, Social Security, and residency documents.\n3. A parent or legal guardian should be ready to sign where required.\n4. Cameron takes a vision screening.\n5. Cameron takes the written knowledge exam.\n6. If he passes, he receives the instruction permit.\n\nImportant Illinois teen permit rules:\n\u2022 The instruction permit is valid for two years for applicants under 18.\n\u2022 The permit must be held for at least nine consecutive months before licensing.\n\u2022 He must complete at least 50 hours of supervised practice driving.\n\u2022 At least 10 of those 50 hours must be at night.\n\u2022 Practice must be supervised by a parent or adult age 21 or older with a valid driver\u2019s license.\n\u2022 All occupants must wear safety belts.\n\u2022 Local curfews may be stricter than state GDL restrictions.\n\nStudy method:\nRead the lesson, take the topic quiz, review every missed explanation, then retake until scoring 90% or higher.", "cram": ["Permit is supervised driving only.", "Bring school form and identity documents.", "Permit valid two years.", "Hold permit at least nine months.", "50 supervised hours, including 10 night hours."]}, {"id": "signs", "title": "Road Signs", "emoji": "\ud83d\udea7", "lesson": "Road signs are easiest when Cameron studies shape first, color second, and words or symbols third.\n\nCommon shapes:\n\u2022 Octagon: STOP.\n\u2022 Triangle pointing down: YIELD.\n\u2022 Diamond: warning.\n\u2022 Pennant: no passing zone.\n\u2022 Round yellow RR sign: railroad crossing ahead.\n\u2022 Crossbuck: railroad crossing at the tracks.\n\u2022 Pentagon: school zone or school crossing.\n\u2022 Rectangle: regulation or guide information.\n\nCommon colors:\n\u2022 Red: stop, yield, do not enter, wrong way, or prohibition.\n\u2022 White and black: regulatory rules, such as speed limit, lane use, turn restrictions, and parking.\n\u2022 Yellow: general warning.\n\u2022 Fluorescent yellow-green: school, pedestrian, and bicycle warnings.\n\u2022 Orange: construction or maintenance.\n\u2022 Green: directions, exits, distances, and guide signs.\n\u2022 Blue: services such as gas, food, lodging, hospital, or accessibility.\n\u2022 Brown: recreation and cultural points of interest.\n\nTest strategy:\nIf the test shows a sign without words, Cameron should identify it by shape and color. If it shows a word sign, he should still notice the color because color tells the type of message.", "cram": ["Octagon = stop.", "Triangle = yield.", "Diamond = warning.", "Pennant = no passing.", "Orange = work zone.", "Fluorescent yellow-green = school/pedestrian/bike.", "Blue = services.", "Brown = recreation/cultural."]}, {"id": "signals", "title": "Traffic Signals", "emoji": "\ud83d\udea6", "lesson": "Traffic lights control when drivers may enter an intersection, but they do not remove the duty to yield when required.\n\nSteady signals:\n\u2022 Red: stop completely before the stop line, crosswalk, or intersection.\n\u2022 Yellow: the signal is changing. Stop if you can do so safely.\n\u2022 Green: go only if the way is clear. Yield to pedestrians and vehicles lawfully in the intersection.\n\nTurns on red:\nA right turn on red is allowed only after a complete stop, after yielding to pedestrians and traffic, and only if no sign prohibits it. Do not roll through the red light.\n\nArrows:\n\u2022 Green arrow: proceed in the direction of the arrow if clear.\n\u2022 Yellow arrow: the protected movement is ending.\n\u2022 Red arrow: stop and do not move in that direction until permitted.\n\nFlashing signals:\n\u2022 Flashing red: treat it like a stop sign.\n\u2022 Flashing yellow: slow down and proceed with caution.\n\nDark or broken signal:\nTreat the intersection like an all-way stop unless a police officer or authorized traffic controller directs otherwise.\n\nPolice directions:\nA police officer\u2019s direction overrides signs and signals.", "cram": ["Red = complete stop.", "Right on red = stop, yield, no prohibiting sign.", "Flashing red = stop sign.", "Flashing yellow = caution.", "Dark signal = all-way stop.", "Officer direction overrides lights."]}, {"id": "markings", "title": "Pavement Markings", "emoji": "\ud83d\udee3\ufe0f", "lesson": "Pavement markings tell drivers where lanes are, which direction traffic moves, where to stop, and whether passing may be allowed.\n\nYellow vs. white:\n\u2022 Yellow lines separate traffic moving in opposite directions.\n\u2022 White lines separate traffic moving in the same direction or mark road edges, stop lines, and crosswalks.\n\nSolid vs. broken:\n\u2022 Broken line: lane changes or passing may be allowed when safe and legal.\n\u2022 Solid line: lane changes or passing are restricted or discouraged.\n\u2022 Solid yellow line on your side: do not pass from your lane.\n\u2022 Double solid yellow lines: no passing from either direction.\n\nCommon markings:\n\u2022 Stop line: stop before the line.\n\u2022 Crosswalk: yield or stop for pedestrians as required.\n\u2022 Center left-turn lane: used for preparing to turn left; not for passing or long-distance driving.\n\u2022 Lane arrows: show permitted movements from that lane.\n\u2022 Railroad pavement markings: warn that tracks are ahead.\n\nImportant rule:\nA pavement marking never makes an unsafe action safe. Passing is legal only when there is enough space, visibility, and no legal restriction.", "cram": ["Yellow = opposite directions.", "White = same direction.", "Solid yellow on your side = do not pass.", "Double solid yellow = no passing either direction.", "Stop before stop line.", "Center turn lane is not for passing."]}, {"id": "row", "title": "Right-of-Way", "emoji": "\u2194\ufe0f", "lesson": "Right-of-way is one of the most important permit-test topics. It means knowing when to yield, not forcing your turn.\n\nFour-way stops:\n\u2022 First vehicle to arrive usually goes first.\n\u2022 If two vehicles arrive at the same time, the driver on the left yields to the driver on the right.\n\u2022 If vehicles face each other and one is turning left, the left-turning driver yields to oncoming traffic going straight or turning right.\n\nLeft turns:\nA driver turning left must yield to oncoming vehicles and pedestrians unless protected by a green arrow and the way is clear.\n\nPedestrians:\nDrivers must yield or stop for pedestrians as required, especially in crosswalks. Never pass another vehicle stopped at a crosswalk.\n\nRoundabouts:\nEntering traffic yields to traffic already in the roundabout.\n\nEmergency vehicles:\nWhen an emergency vehicle approaches with lights or siren, pull to the right and stop when safe until it passes.\n\nMove Over law:\nWhen approaching a stopped emergency, maintenance, or disabled vehicle with flashing lights, move over if possible. If not possible, slow down and proceed cautiously.\n\nSchool buses:\nOn a two-lane road, a stopped school bus with flashing red lights and stop arm extended requires traffic in both directions to stop.", "cram": ["First at stop goes first.", "Same time: left yields to right.", "Left turns yield to oncoming traffic and pedestrians.", "Entering roundabout yields to traffic inside.", "Pull right and stop for emergency vehicle.", "Move over or slow for stopped flashing-light vehicles.", "Two-lane school bus stop = both directions stop."]}, {"id": "speed", "title": "Speed and Space", "emoji": "\u23f1\ufe0f", "lesson": "A speed limit is the maximum legal speed under ideal conditions. A driver can be going too fast even below the posted limit if weather, visibility, traffic, or road conditions are poor.\n\nCommon Illinois speeds Cameron should know:\n\u2022 School zones are commonly 20 mph on school days when children are present.\n\u2022 Alleys are commonly 15 mph.\n\u2022 Many city and town streets are commonly 30 mph unless posted otherwise.\n\u2022 Posted limits control unless conditions require a lower speed.\n\nFollowing distance:\nUse at least a three-second following distance in normal conditions. Pick a fixed object. When the car ahead passes it, count \u201cone thousand one, one thousand two, one thousand three.\u201d If you reach the object before finishing, you are too close.\n\nIncrease following distance:\n\u2022 Rain, snow, ice, fog, or darkness.\n\u2022 Heavy traffic.\n\u2022 Behind motorcycles, trucks, buses, or vehicles blocking your view.\n\u2022 When being tailgated.\n\u2022 On slippery roads.\n\nStopping distance includes perception time, reaction time, and braking distance. Higher speed greatly increases total stopping distance.", "cram": ["Speed limit is maximum under ideal conditions.", "School zone often 20 mph when children present.", "Alley often 15 mph.", "Use at least a 3-second gap.", "Bad conditions require more space."]}, {"id": "weather", "title": "Weather and Defensive Driving", "emoji": "\ud83c\udf27\ufe0f", "lesson": "Defensive driving means anticipating hazards before they become emergencies.\n\nRain and hydroplaning:\nHydroplaning happens when water separates the tires from the road. Slow before water-covered areas, avoid sudden steering or braking, and maintain good tires.\n\nSnow and ice:\nAccelerate slowly, brake gently, steer smoothly, and increase following distance. Bridges and shaded areas may freeze first.\n\nFog:\nUse low-beam headlights. High beams reflect off fog and can make visibility worse.\n\nNight driving:\nReduce speed because visibility is lower. If oncoming high beams are blinding, look toward the right edge of your lane.\n\nSkids:\nTake your foot off the gas, avoid sudden braking, and steer where you want the front of the vehicle to go.\n\nTire blowout:\nGrip the wheel firmly, avoid slamming the brakes, ease off the accelerator, and move safely off the road.\n\nHeadlights:\nUse headlights when visibility is poor and when windshield wipers are needed because of weather.", "cram": ["Defensive driving = anticipate hazards.", "Low beams in fog.", "Look right edge if blinded.", "Skid: steer where you want front to go.", "Blowout: grip wheel, ease off gas, no hard braking.", "Headlights when wipers are needed due to weather."]}, {"id": "sharing", "title": "Sharing the Road", "emoji": "\ud83d\udeb2", "lesson": "Cameron must share the road with pedestrians, bicycles, motorcycles, trucks, buses, emergency vehicles, farm equipment, and road workers.\n\nPedestrians:\nExpect pedestrians at crosswalks, intersections, parking lots, school zones, and near buses.\n\nBicycles:\nBicyclists have rights and responsibilities. Give safe passing space and check for bikes before turning or opening a door.\n\nMotorcycles:\nMotorcycles are smaller and harder to see. Give them space and check blind spots carefully.\n\nLarge trucks and buses:\nLarge vehicles have bigger blind spots, need more stopping distance, and make wide turns. Do not cut in closely after passing a truck. If you cannot see the driver in the truck\u2019s mirror, the driver may not see you.\n\nWork zones:\nOrange signs mean construction or maintenance. Slow down, obey signs and flaggers, and expect workers, equipment, lane shifts, and sudden stops.", "cram": ["Look for pedestrians at crossings and schools.", "Bikes have rights and responsibilities.", "Motorcycles are harder to see.", "Trucks have large blind spots and wide turns.", "Orange signs = work zone."]}, {"id": "alcohol", "title": "Alcohol, Drugs, and Distraction", "emoji": "\ud83d\udcf5", "lesson": "Driving requires attention, judgment, reaction time, coordination, and vision. Alcohol, drugs, fatigue, and phones damage those abilities.\n\nAlcohol:\nFor drivers age 21 and older, the common legal BAC limit is 0.08%. For drivers under 21, Illinois has zero-tolerance alcohol rules. For Cameron, the practical rule is simple: no alcohol, no drugs, and never ride with an impaired driver.\n\nDrugs:\nPrescription, over-the-counter, and illegal drugs can all impair driving. Warning labels such as \u201cmay cause drowsiness\u201d matter.\n\nDistraction:\nTexting is especially dangerous because it takes eyes off the road, hands off the wheel, and mind off driving. Handheld phone use while driving is generally prohibited. Teen drivers should avoid phone use while driving.\n\nSeat belts:\nSeat belts reduce death and injury. Everyone in the vehicle should be properly belted.\n\nPassengers:\nTeen passengers can be distracting, which is one reason GDL laws limit passengers during early licensing stages.", "cram": ["Under 21 = zero-tolerance alcohol rules.", "0.08% is adult legal limit, not a safe target.", "Medicine can impair driving.", "Texting = eyes, hands, mind off driving.", "Wear seat belts."]}, {"id": "crashes", "title": "Crashes, Railroads, and Equipment", "emoji": "\u26a0\ufe0f", "lesson": "Crash procedure:\nFirst check for injuries and safety. Move vehicles out of traffic if safe. Call emergency services when needed. Exchange information and follow reporting requirements. Never leave the scene when the law requires you to stop.\n\nBreakdowns:\nMove out of traffic if possible, turn on hazard lights, and stay safe. Be careful exiting near traffic.\n\nRailroad crossings:\nSlow and look both ways. Never stop on tracks. Do not drive around lowered gates. When lights flash or gates are down, stop and wait until the warning devices clear and it is safe. Watch for a second train after the first passes.\n\nVehicle equipment:\nTires, brakes, lights, mirrors, windshield wipers, and seat belts are safety equipment. Poor tires are especially dangerous in rain or snow. Headlights are required when wipers are needed due to weather.\n\nInsurance:\nDrivers should carry proof of required insurance and be ready to show it when required.", "cram": ["Crash: injuries and safety first.", "Do not leave required crash scene.", "Breakdown: move out of traffic and use hazards.", "Never stop on railroad tracks.", "Do not drive around gates.", "Maintain tires, brakes, lights, and wipers."]}];
+const QUESTIONS = [{"category": "permit", "q": "A teen instruction permit allows Cameron to drive:", "choices": ["Alone anytime", "Only with proper supervision", "Only on private roads", "Only after midnight"], "answer": 1, "why": "A permit is for supervised practice, not solo driving."}, {"category": "permit", "q": "A teen under 18 must hold the permit for at least:", "choices": ["30 days", "3 months", "6 months", "9 consecutive months"], "answer": 3, "why": "Illinois GDL requires at least nine consecutive months."}, {"category": "permit", "q": "Required supervised practice before licensing is:", "choices": ["20 hours including 5 at night", "30 hours including 10 at night", "50 hours including 10 at night", "100 hours including 20 at night"], "answer": 2, "why": "Illinois requires 50 supervised hours, including 10 at night."}, {"category": "permit", "q": "The Illinois permit visit usually includes:", "choices": ["Vision screening and written knowledge test", "Only a road test", "Only a parking test", "Only an emissions test"], "answer": 0, "why": "Permit applicants should expect vision screening and written testing."}, {"category": "permit", "q": "The instruction permit for applicants under 18 is valid for:", "choices": ["6 months", "1 year", "2 years", "Until age 21"], "answer": 2, "why": "Illinois teen permits are valid for two years."}, {"category": "permit", "q": "Who should be ready to provide consent for a minor applicant?", "choices": ["A parent or legal guardian", "Any friend", "A neighbor", "No one"], "answer": 0, "why": "A parent or legal guardian consent is required for minors."}, {"category": "permit", "q": "If Cameron fails a practice test, the best response is to:", "choices": ["Review every missed explanation", "Stop studying", "Memorize only the answers", "Skip the handbook"], "answer": 0, "why": "Reviewing mistakes is how he learns the rule behind the answer."}, {"category": "permit", "q": "The driving-school permit application matters because:", "choices": ["It shows school enrollment/eligibility", "It replaces the vision test", "It lets him drive alone", "It is only a souvenir"], "answer": 0, "why": "Teen applicants need driver education enrollment/proof for the permit process."}, {"category": "signs", "q": "An octagon means:", "choices": ["Stop", "Yield", "No passing", "School zone"], "answer": 0, "why": "The red octagon is the stop sign."}, {"category": "signs", "q": "A triangle pointing downward means:", "choices": ["Yield", "Stop", "Railroad crossing", "No U-turn"], "answer": 0, "why": "The upside-down triangle is yield."}, {"category": "signs", "q": "A diamond-shaped sign is usually a:", "choices": ["Warning sign", "Service sign", "Speed limit sign", "Parking sign"], "answer": 0, "why": "Diamond-shaped signs warn of hazards or conditions ahead."}, {"category": "signs", "q": "A pennant-shaped sign means:", "choices": ["No passing zone", "Hospital", "Rest area", "Bike route"], "answer": 0, "why": "Pennant signs mark no-passing zones."}, {"category": "signs", "q": "Orange signs mean:", "choices": ["Construction or maintenance", "Hospital", "Recreation", "Parking only"], "answer": 0, "why": "Orange is the construction/maintenance warning color."}, {"category": "signs", "q": "Fluorescent yellow-green signs commonly warn of:", "choices": ["School, pedestrian, or bicycle activity", "Gas and food", "No parking", "Highway exits only"], "answer": 0, "why": "Fluorescent yellow-green is used for school, pedestrian, and bicycle warnings."}, {"category": "signs", "q": "Blue signs commonly show:", "choices": ["Motorist services", "No passing zones", "Construction", "Stop commands"], "answer": 0, "why": "Blue guide signs often mark gas, food, lodging, hospital, or services."}, {"category": "signs", "q": "Brown signs indicate:", "choices": ["Recreation or cultural interest areas", "Speed limits", "Wrong way", "School zones"], "answer": 0, "why": "Brown signs identify recreation/cultural interest areas."}, {"category": "signs", "q": "A round yellow sign with RR warns of:", "choices": ["Railroad crossing ahead", "Roundabout ahead", "Rest area", "Road closed"], "answer": 0, "why": "Round yellow RR signs warn of railroad crossings ahead."}, {"category": "signs", "q": "A crossbuck sign is located:", "choices": ["At a railroad crossing", "At a hospital", "Only on interstates", "Only in parking lots"], "answer": 0, "why": "The crossbuck marks railroad tracks."}, {"category": "signs", "q": "White and black rectangular signs are usually:", "choices": ["Regulatory signs", "Work-zone signs", "Recreation signs", "Weather signs"], "answer": 0, "why": "White/black rectangular signs commonly state traffic laws and regulations."}, {"category": "signs", "q": "Green signs usually provide:", "choices": ["Directions, exits, or distances", "No passing warnings", "School warnings", "Railroad rules"], "answer": 0, "why": "Green is used for guide information."}, {"category": "signals", "q": "A steady red light means:", "choices": ["Stop completely", "Slow and continue", "Speed up", "Turn only"], "answer": 0, "why": "Red requires a complete stop before entering."}, {"category": "signals", "q": "A right turn on red is allowed only after:", "choices": ["A full stop and yielding, unless prohibited", "A rolling stop", "Honking", "Flashing headlights"], "answer": 0, "why": "Right on red requires full stop and yielding when permitted."}, {"category": "signals", "q": "A flashing red signal means:", "choices": ["Stop, then proceed when safe", "Proceed without slowing", "Speed up", "Road closed"], "answer": 0, "why": "Flashing red is treated like a stop sign."}, {"category": "signals", "q": "A flashing yellow signal means:", "choices": ["Proceed with caution", "Stop and wait for green", "No turns", "Wrong way"], "answer": 0, "why": "Flashing yellow means slow and proceed carefully."}, {"category": "signals", "q": "A dark or inoperative signal is generally treated as:", "choices": ["All-way stop", "Green light", "Yield only", "No rule"], "answer": 0, "why": "Treat a dark signal like an all-way stop unless directed otherwise."}, {"category": "signals", "q": "A police officer directing traffic:", "choices": ["Overrides signs/signals", "Can be ignored if light is green", "Only controls pedestrians", "Does not affect drivers"], "answer": 0, "why": "Officer directions control over signals/signs."}, {"category": "signals", "q": "A yellow light means:", "choices": ["Signal is changing; stop if safe", "Speed up", "Always stop immediately even if unsafe", "Pedestrians only"], "answer": 0, "why": "Yellow warns the light is changing; stop if safe."}, {"category": "signals", "q": "A green light means:", "choices": ["Proceed if clear and yield when required", "Go no matter what", "Ignore pedestrians", "Always turn"], "answer": 0, "why": "Green allows movement only when safe/legal."}, {"category": "signals", "q": "A red arrow means:", "choices": ["Stop and do not travel that direction until permitted", "Turn carefully", "Yield only", "Speed up"], "answer": 0, "why": "A red arrow prohibits movement in that direction until allowed."}, {"category": "signals", "q": "A green arrow means:", "choices": ["Proceed in the arrow direction if clear", "Stop", "No turns", "Pedestrians only"], "answer": 0, "why": "A green arrow permits movement in that direction when clear."}, {"category": "markings", "q": "Yellow lines separate traffic moving:", "choices": ["Opposite directions", "Same direction", "Only bicycles", "Only parking"], "answer": 0, "why": "Yellow separates opposite-direction traffic."}, {"category": "markings", "q": "White lines separate traffic moving:", "choices": ["Same direction", "Opposite directions", "Only trains", "Only pedestrians"], "answer": 0, "why": "White separates same-direction lanes or marks edges/crosswalks."}, {"category": "markings", "q": "Solid yellow on your side means:", "choices": ["Do not pass from your lane", "Pass anytime", "One-way road", "Bike lane"], "answer": 0, "why": "A solid yellow line on your side prohibits passing."}, {"category": "markings", "q": "Double solid yellow lines mean:", "choices": ["No passing from either direction", "Passing both directions", "Only trucks pass", "Parking allowed"], "answer": 0, "why": "Double solid yellow prohibits passing in both directions."}, {"category": "markings", "q": "A broken yellow line means passing may be allowed when:", "choices": ["Safe and legal", "You are late", "Traffic is heavy", "It is nighttime"], "answer": 0, "why": "Passing still requires safety, visibility, and legality."}, {"category": "markings", "q": "A center left-turn lane is for:", "choices": ["Preparing for left turns", "Passing", "Parking", "Long-distance driving"], "answer": 0, "why": "Two-way left-turn lanes are for turning left, not passing."}, {"category": "markings", "q": "A stop line tells the driver:", "choices": ["Where to stop", "Where to speed up", "Where to park", "Where to pass"], "answer": 0, "why": "Stop before the stop line when required."}, {"category": "markings", "q": "Lane arrows show:", "choices": ["Permitted movements from that lane", "Suggested speed", "Tire pressure", "No rule"], "answer": 0, "why": "Lane-use arrows show what movements are allowed."}, {"category": "markings", "q": "A solid white lane line generally means lane changes are:", "choices": ["Discouraged or restricted", "Required immediately", "Only for trucks", "Always illegal"], "answer": 0, "why": "Solid white lines discourage or restrict lane changes."}, {"category": "markings", "q": "Crosswalk markings warn drivers to watch for:", "choices": ["Pedestrians", "Gas stations", "Toll booths", "No-passing zones"], "answer": 0, "why": "Crosswalks indicate where pedestrians may cross."}, {"category": "row", "q": "At a four-way stop, first to arrive generally:", "choices": ["Goes first", "Goes last", "Must honk", "Must reverse"], "answer": 0, "why": "At all-way stops, first arrival usually proceeds first."}, {"category": "row", "q": "If two vehicles arrive at a four-way stop at the same time:", "choices": ["Driver on left yields to driver on right", "Driver on right yields to left", "Larger vehicle goes first", "You race"], "answer": 0, "why": "Same-time arrivals: left yields to right."}, {"category": "row", "q": "A driver turning left must yield to:", "choices": ["Oncoming traffic and pedestrians", "Only trucks", "No one on green", "Only bicycles"], "answer": 0, "why": "Left turns yield to oncoming traffic and pedestrians unless protected and clear."}, {"category": "row", "q": "Entering a roundabout, yield to:", "choices": ["Traffic already in the roundabout", "Traffic behind you", "Only trucks", "No one"], "answer": 0, "why": "Entering vehicles yield to circulating traffic."}, {"category": "row", "q": "When an emergency vehicle approaches with lights/siren:", "choices": ["Pull right and stop when safe", "Speed up", "Stop in left lane", "Follow it"], "answer": 0, "why": "Yield by pulling right and stopping safely."}, {"category": "row", "q": "Move Over law near stopped flashing-light vehicles means:", "choices": ["Move over if possible, or slow and proceed cautiously", "Ignore them", "Stop in travel lane every time", "Turn off lights"], "answer": 0, "why": "Move over when possible; otherwise slow and use caution."}, {"category": "row", "q": "On a two-lane road, a school bus with red lights and stop arm extended requires:", "choices": ["Both directions stop", "Only cars behind stop", "No one stops", "Only trucks stop"], "answer": 0, "why": "On a two-lane road, traffic both directions must stop."}, {"category": "row", "q": "Never pass a vehicle stopped at a crosswalk because:", "choices": ["It may be yielding to a pedestrian", "It is always parked", "It means the road is closed", "It is optional"], "answer": 0, "why": "A stopped vehicle can hide a pedestrian."}, {"category": "row", "q": "A driver leaving a driveway must yield to:", "choices": ["Pedestrians and traffic on the roadway", "Only large trucks", "No one", "Only traffic from the left"], "answer": 0, "why": "Drivers entering a road from a driveway must yield."}, {"category": "row", "q": "At an uncontrolled intersection, a driver should:", "choices": ["Slow, look, and yield as required", "Assume everyone stops", "Speed up", "Ignore pedestrians"], "answer": 0, "why": "Uncontrolled intersections require caution and yielding rules."}, {"category": "speed", "q": "School zone speed when children are present is commonly:", "choices": ["20 mph", "30 mph", "45 mph", "55 mph"], "answer": 0, "why": "Illinois school zones are commonly 20 mph when children are present on school days."}, {"category": "speed", "q": "An alley speed is commonly:", "choices": ["15 mph", "30 mph", "45 mph", "55 mph"], "answer": 0, "why": "Alleys are commonly 15 mph."}, {"category": "speed", "q": "Many city streets are commonly:", "choices": ["30 mph unless posted", "15 mph always", "55 mph always", "70 mph"], "answer": 0, "why": "Many urban streets are 30 mph unless otherwise posted."}, {"category": "speed", "q": "A safe following distance in normal conditions is at least:", "choices": ["3 seconds", "1 second", "Half a car length", "No gap"], "answer": 0, "why": "Use at least a three-second following distance under normal conditions."}, {"category": "speed", "q": "In bad weather, following distance should be:", "choices": ["Longer", "Shorter", "The same", "Zero"], "answer": 0, "why": "Poor conditions require more stopping distance."}, {"category": "speed", "q": "Speed limits are:", "choices": ["Maximums under ideal conditions", "Minimums", "Suggestions only", "Only for highways"], "answer": 0, "why": "A driver may need to go slower than the limit when conditions are poor."}, {"category": "speed", "q": "Stopping distance increases greatly as:", "choices": ["Speed increases", "Music gets louder", "The car is newer", "Seatbelt is worn"], "answer": 0, "why": "Higher speed increases reaction and braking distance."}, {"category": "speed", "q": "If tailgated, the safest response is to:", "choices": ["Increase space ahead and let them pass when safe", "Brake-check", "Race", "Block them"], "answer": 0, "why": "Do not retaliate; create space and let them pass safely."}, {"category": "speed", "q": "The three-second rule measures:", "choices": ["Following distance", "Engine speed", "Parking distance", "Tire pressure"], "answer": 0, "why": "The three-second rule is for safe following distance."}, {"category": "speed", "q": "Driving too fast for conditions can happen:", "choices": ["Even below the posted speed limit", "Only above 100 mph", "Only on highways", "Only at night"], "answer": 0, "why": "Speed must match conditions."}, {"category": "weather", "q": "Headlights are required when wipers are needed due to weather.", "choices": ["True", "False"], "answer": 0, "why": "Illinois requires headlights when wipers are needed due to weather."}, {"category": "weather", "q": "In fog, use:", "choices": ["Low beams", "High beams", "Parking lights only", "Interior lights"], "answer": 0, "why": "Low beams reduce glare in fog."}, {"category": "weather", "q": "If blinded by high beams, look toward:", "choices": ["The right edge of the lane", "The lights", "Your phone", "The left shoulder"], "answer": 0, "why": "Looking right helps reduce glare while maintaining lane position."}, {"category": "weather", "q": "If the vehicle skids:", "choices": ["Steer where you want the front to go and avoid sudden braking", "Slam brakes", "Accelerate hard", "Close eyes"], "answer": 0, "why": "Smooth steering and avoiding abrupt braking help recover."}, {"category": "weather", "q": "Hydroplaning happens when:", "choices": ["Water separates tires from road", "Brakes overheat", "Engine stalls", "Lights fail"], "answer": 0, "why": "Hydroplaning occurs when tires ride on water and lose traction."}, {"category": "weather", "q": "Bridges and shaded areas freeze:", "choices": ["Before other road surfaces", "After all roads thaw", "Only in summer", "Never"], "answer": 0, "why": "Bridges and shaded areas can freeze first."}, {"category": "weather", "q": "A tire blowout response should include:", "choices": ["Grip wheel, ease off gas, avoid slamming brakes", "Slam brakes", "Turn sharply", "Accelerate"], "answer": 0, "why": "Keep control and slow gradually."}, {"category": "weather", "q": "Defensive driving means:", "choices": ["Anticipating hazards early", "Driving aggressively", "Never yielding", "Always driving below 10 mph"], "answer": 0, "why": "Defensive driving is early hazard recognition and risk reduction."}, {"category": "weather", "q": "At night, a driver should avoid overdriving:", "choices": ["Headlights", "Radio", "Air conditioner", "Seat belt"], "answer": 0, "why": "Do not drive faster than you can see and stop within your headlight distance."}, {"category": "weather", "q": "On ice, braking and steering should be:", "choices": ["Smooth and gentle", "Sharp and sudden", "Ignored", "Done only with the parking brake"], "answer": 0, "why": "Smooth inputs reduce skids."}, {"category": "sharing", "q": "Bicyclists have:", "choices": ["Rights and responsibilities on the road", "No rights", "Permission only on sidewalks", "Priority over all signals"], "answer": 0, "why": "Bicyclists share the road and must follow rules."}, {"category": "sharing", "q": "Large trucks have:", "choices": ["Large blind spots and longer stopping distances", "Shorter stopping distances", "No blind spots", "Tiny turn radius"], "answer": 0, "why": "Give trucks extra space."}, {"category": "sharing", "q": "If you cannot see a truck driver in the mirror:", "choices": ["They likely cannot see you", "They definitely see you", "You should pass on right", "You should tailgate"], "answer": 0, "why": "Truck mirrors indicate blind spots."}, {"category": "sharing", "q": "Motorcycles are dangerous to miss because:", "choices": ["They are smaller and harder to see", "They are always speeding", "They never stop", "They cannot turn"], "answer": 0, "why": "Motorcycles can be overlooked due to size."}, {"category": "sharing", "q": "Before opening a car door near traffic, check for:", "choices": ["Bicycles and vehicles", "Only rain", "Only police", "Only passengers"], "answer": 0, "why": "Dooring can seriously injure bicyclists."}, {"category": "sharing", "q": "In work zones, drivers should:", "choices": ["Slow down and obey signs/flaggers", "Speed up", "Ignore orange signs", "Use phone"], "answer": 0, "why": "Work zones require reduced speed and attention."}, {"category": "sharing", "q": "When passing a bicyclist, drivers should:", "choices": ["Give safe space", "Honk continuously", "Pass within inches", "Force them off road"], "answer": 0, "why": "Give cyclists safe clearance."}, {"category": "sharing", "q": "Large vehicles making right turns may:", "choices": ["Swing wide", "Always turn from far right only", "Never need space", "Stop forever"], "answer": 0, "why": "Trucks and buses often need extra turning room."}, {"category": "sharing", "q": "Orange signs warn drivers about:", "choices": ["Work zones and maintenance", "Hospitals", "Recreation", "Gas stations"], "answer": 0, "why": "Orange is for construction/maintenance warnings."}, {"category": "sharing", "q": "Pedestrians are especially likely near:", "choices": ["Crosswalks, schools, buses, and parking lots", "Only highways", "Only farms", "Only alleys"], "answer": 0, "why": "Drivers must expect pedestrians in high-pedestrian areas."}, {"category": "alcohol", "q": "For drivers 21 and older, the legal BAC limit is commonly:", "choices": ["0.08%", "0.18%", "0.28%", "No limit"], "answer": 0, "why": "0.08% is the adult per se DUI limit."}, {"category": "alcohol", "q": "Illinois under-21 drivers are subject to:", "choices": ["Zero-tolerance alcohol rules", "Higher BAC limits", "No alcohol rules", "Only weekend rules"], "answer": 0, "why": "Underage drivers are subject to zero-tolerance rules."}, {"category": "alcohol", "q": "Texting while driving is dangerous because it is:", "choices": ["Visual, manual, and mental distraction", "Only visual", "Only manual", "Not distracting"], "answer": 0, "why": "Texting takes eyes, hands, and attention away."}, {"category": "alcohol", "q": "Prescription medicine can impair driving.", "choices": ["True", "False"], "answer": 0, "why": "Some medications reduce alertness/reaction time."}, {"category": "alcohol", "q": "The safest choice before driving is:", "choices": ["No alcohol or impairing drugs", "Coffee after alcohol", "Drive slowly if impaired", "Open windows"], "answer": 0, "why": "Do not drive impaired."}, {"category": "alcohol", "q": "Seat belts are important because they:", "choices": ["Reduce death and injury", "Make speeding safe", "Replace airbags", "Are optional for teens"], "answer": 0, "why": "Seat belts are critical safety equipment."}, {"category": "alcohol", "q": "A child under 8 generally needs:", "choices": ["Appropriate child restraint", "Only lap belt", "Front seat only", "No restraint"], "answer": 0, "why": "Illinois requires appropriate child restraints for children under 8."}, {"category": "alcohol", "q": "Phone use while driving:", "choices": ["Reduces attention and increases crash risk", "Improves reaction time", "Is required for teens", "Is always safe"], "answer": 0, "why": "Phones create dangerous distraction."}, {"category": "alcohol", "q": "Fatigue can affect driving like:", "choices": ["Impairment", "Better focus", "More horsepower", "No effect"], "answer": 0, "why": "Fatigue slows reaction time and judgment."}, {"category": "alcohol", "q": "A teen driver should ride with an impaired driver:", "choices": ["Never", "Only nearby", "Only in daytime", "Only with seat belt"], "answer": 0, "why": "Never ride with an impaired driver."}, {"category": "crashes", "q": "After a crash, first priority is:", "choices": ["Injuries and safety", "Arguing fault", "Posting photos", "Leaving"], "answer": 0, "why": "Check injuries and safety first."}, {"category": "crashes", "q": "Never stop:", "choices": ["On railroad tracks", "At red lights", "At stop signs", "For pedestrians"], "answer": 0, "why": "Never enter tracks unless there is room to clear them."}, {"category": "crashes", "q": "When railroad gates are down:", "choices": ["Stop and wait", "Drive around if no train seen", "Honk and cross", "Speed up"], "answer": 0, "why": "Do not drive around gates; wait until clear."}, {"category": "crashes", "q": "After one train passes:", "choices": ["Watch for a second train", "Cross without looking", "Park on tracks", "Turn off car"], "answer": 0, "why": "A second train may be coming from either direction."}, {"category": "crashes", "q": "Proof of insurance should be:", "choices": ["Carried/available when required", "Hidden at home only", "Optional", "Only for trucks"], "answer": 0, "why": "Drivers must be able to show required insurance proof."}, {"category": "crashes", "q": "Poor tire tread is especially risky in:", "choices": ["Rain and snow", "Dry garages", "Sunny parking lots only", "Only at 5 mph"], "answer": 0, "why": "Poor tread reduces traction and increases hydroplaning/skid risk."}, {"category": "crashes", "q": "If your car breaks down, you should:", "choices": ["Move out of traffic if possible and use hazard lights", "Stop in the lane with no warning", "Stand behind it in traffic", "Leave immediately"], "answer": 0, "why": "Move safely out of traffic and warn others."}, {"category": "crashes", "q": "Vehicle lights, brakes, tires, mirrors, and wipers are:", "choices": ["Safety equipment", "Decorations", "Only optional", "Only for road tests"], "answer": 0, "why": "These systems are essential for safe driving."}, {"category": "crashes", "q": "Driving around a lowered railroad gate is:", "choices": ["Dangerous and illegal", "Allowed if no train is visible", "Required if late", "Safe at night"], "answer": 0, "why": "Never drive around lowered gates."}, {"category": "crashes", "q": "If emergency help is needed after a crash, call:", "choices": ["911", "A restaurant", "A friend first", "No one"], "answer": 0, "why": "Call emergency services for injuries or urgent danger."}];
+let currentQuiz = [];
+let currentCat = "all";
+let currentCount = 10;
+let answered = [];
+let correct = [];
+function save(k,v){ localStorage.setItem("permitapp_"+k, JSON.stringify(v)); }
+function load(k,def){ try{ return JSON.parse(localStorage.getItem("permitapp_"+k)) ?? def; }catch(e){ return def; } }
+function showView(id){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".topbar button").forEach(b=>b.classList.toggle("active", b.dataset.view===id));
+  window.scrollTo(0,0);
+  if(id==="progress") renderProgress();
+}
+function renderMenus(){
+  const tg = document.getElementById("topicGrid");
+  const qg = document.getElementById("quizGrid");
+  tg.innerHTML = "";
+  qg.innerHTML = "";
+  TOPICS.forEach(t=>{
+    tg.innerHTML += `<div class="card tile" onclick="openLesson('${t.id}')"><div class="badge">${t.emoji}</div><h3>${t.title}</h3><p>Read lesson + cram points.</p></div>`;
+    qg.innerHTML += `<div class="card tile" onclick="startQuiz('${t.id}',10)"><div class="badge">${t.emoji}</div><h3>${t.title}</h3><p>10 random questions.</p></div>`;
+  });
+  qg.innerHTML += `<div class="card tile" onclick="startQuiz('all',20)"><div class="badge">🔀</div><h3>Mixed Review</h3><p>20 random questions from all topics.</p></div>`;
+  qg.innerHTML += `<div class="card tile" onclick="startExam()"><div class="badge">🎓</div><h3>Final Exam</h3><p>35 random questions.</p></div>`;
+}
+function openLesson(id){
+  const t = TOPICS.find(x=>x.id===id);
+  document.getElementById("lessonTitle").textContent = `${t.emoji} ${t.title}`;
+  document.getElementById("lessonBody").textContent = t.lesson;
+  document.getElementById("lessonCram").innerHTML = "<ul>"+t.cram.map(x=>`<li>${x}</li>`).join("")+"</ul>";
+  document.getElementById("lessonQuizBtn").onclick = ()=>startQuiz(id,10);
+  let p = load("topicProgress",{});
+  p[id] = Math.max(p[id]||0, 30);
+  save("topicProgress",p);
+  showView("lesson");
+}
+function shuffle(a){ return [...a].sort(()=>Math.random()-0.5); }
+function startQuiz(cat,count){
+  currentCat = cat; currentCount = count;
+  const pool = cat==="all" ? QUESTIONS : QUESTIONS.filter(q=>q.category===cat);
+  currentQuiz = shuffle(pool).slice(0, Math.min(count, pool.length));
+  answered = Array(currentQuiz.length).fill(false);
+  correct = Array(currentQuiz.length).fill(false);
+  document.getElementById("quizTitle").textContent = cat==="all" ? `Mixed Practice — ${currentQuiz.length} Questions` : `${(TOPICS.find(t=>t.id===cat)||{title:"Quiz"}).title} Quiz — ${currentQuiz.length} Questions`;
+  renderQuestions();
+  showView("quiz");
+}
+function startExam(){ currentCat="all"; currentCount=35; startQuiz("all",35); document.getElementById("quizTitle").textContent = "Final Exam Simulation — 35 Random Questions"; }
+function newSameQuiz(){ startQuiz(currentCat,currentCount); }
+function renderQuestions(){
+  const area = document.getElementById("questionArea");
+  area.innerHTML = "";
+  currentQuiz.forEach((q,i)=>{
+    const topic = TOPICS.find(t=>t.id===q.category);
+    const div = document.createElement("div");
+    div.className = "card";
+    div.id = "qcard_"+i;
+    div.innerHTML = `<span class="tag">${topic?topic.title:q.category}</span><h3>${i+1}. ${q.q}</h3>`;
+    q.choices.forEach((c,j)=>{
+      const b = document.createElement("button");
+      b.className = "choice";
+      b.textContent = String.fromCharCode(65+j)+". "+c;
+      b.onclick = ()=>answerQuestion(i,j);
+      div.appendChild(b);
+    });
+    const e = document.createElement("div");
+    e.className = "explain";
+    e.id = "explain_"+i;
+    e.textContent = q.why;
+    div.appendChild(e);
+    area.appendChild(div);
+  });
+  updateScore();
+}
+function answerQuestion(i,j){
+  if(answered[i]) return;
+  answered[i]=true;
+  correct[i]=j===currentQuiz[i].answer;
+  const buttons = document.querySelectorAll("#qcard_"+i+" .choice");
+  buttons.forEach((b,k)=>{
+    if(k===currentQuiz[i].answer) b.classList.add("correct");
+    if(k===j && k!==currentQuiz[i].answer) b.classList.add("wrong");
+    b.disabled = true;
+  });
+  document.getElementById("explain_"+i).style.display = "block";
+  updateScore();
+  if(answered.every(Boolean)) finishQuiz();
+}
+function updateScore(){
+  const a = answered.filter(Boolean).length;
+  const c = correct.filter(Boolean).length;
+  document.getElementById("scoreLine").textContent = `Score: ${c}/${a}${a? " — "+Math.round(c/a*100)+"%" : ""}`;
+  document.getElementById("quizBar").style.width = (currentQuiz.length? (a/currentQuiz.length*100):0)+"%";
+}
+function finishQuiz(){
+  const c = correct.filter(Boolean).length;
+  const pct = Math.round(c/currentQuiz.length*100);
+  let p = load("topicProgress",{});
+  if(currentCat==="all" && currentCount===35){
+    let exams = load("examScores",[]);
+    exams.unshift({score:pct,date:new Date().toLocaleString()});
+    save("examScores",exams.slice(0,10));
+  } else if(currentCat!=="all") {
+    p[currentCat] = Math.max(p[currentCat]||0, pct);
+    save("topicProgress",p);
+  }
+}
+function showAllExplanations(){
+  currentQuiz.forEach((q,i)=>document.getElementById("explain_"+i).style.display="block");
+}
+function renderProgress(){
+  const p = load("topicProgress",{});
+  const exams = load("examScores",[]);
+  let html = "<h3>Lesson / topic progress</h3>";
+  TOPICS.forEach(t=>{
+    const val = p[t.id] || 0;
+    html += `<div class="card"><strong>${t.emoji} ${t.title}</strong><div class="progressWrap"><div class="progressBar" style="width:${val}%"></div></div><p class="small">${val}% best quiz/lesson progress</p></div>`;
+  });
+  html += "<h3>Recent final exams</h3>";
+  if(!exams.length) html += "<p>No final exams completed yet.</p>";
+  exams.forEach(e=> html += `<p><strong>${e.score}%</strong> — ${e.date}</p>`);
+  document.getElementById("progressList").innerHTML = html;
+}
+function resetProgress(){
+  if(confirm("Reset all saved progress in this browser?")){
+    Object.keys(localStorage).filter(k=>k.startsWith("permitapp_")).forEach(k=>localStorage.removeItem(k));
+    renderProgress();
+  }
+}
+renderMenus();
+showView("home");
+</script>
+</body>
+</html>
